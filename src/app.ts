@@ -1,51 +1,59 @@
 import express from "express";
+import type { Request, Response } from "express";
+
+export interface Livro {
+    id: number;
+    title: string;
+    author: string;
+    ano_pub: number;
+}
 
 const app = express();
 
 //MIDDLEWARE
 app.use(express.json());
 
-const livros = [
+const livros: Livro[] = [
     {
         id: 1,
         title: "Sherlock Holmes: O Mistério",
         author: "Hans Donner",
-        ano_pub: 1990
+        ano_pub: 1990,
     },
 
      {
         id: 2,
         title: "Cidade de Papel",
         author: "Cora Coraline",
-        ano_pub: 2016
+        ano_pub: 2016,
     }
 ]
 
 //FUNÇÕES
-function buscaLivro(id){
+function buscaLivro(id: string | number): number {
     return livros.findIndex(livro => {
         return livro.id === Number(id);
     });
 }
 
 //REQUISIÇÕES
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
     res.status(200).send("Codificação BackEnd");
 });
 
-app.get("/livros", (req, res) => {
+app.get("/livros", (req: Request, res: Response) => {
     res.status(200).json(livros);
 });
 
 //REQUISIÇÃO POST (CADASTRAR NOVO LIVRO)
-app.post("/livros", (req, res) => {
+app.post("/livros", (req: Request, res:Response) => {
     const { id, title, author, ano_pub } = req.body;
 
-    const novoLivro = {
-        id,
+    const novoLivro: Livro = {
+        id: Number(id),
         title,
         author,
-        ano_pub
+        ano_pub: Number(ano_pub),
     };
 
     livros.push(novoLivro);

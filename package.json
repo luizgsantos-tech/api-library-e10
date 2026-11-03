@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js"
+    "dev" "nodemon server.ts"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,14 @@
   },
   "homepage": "https://github.com/luizgsantos-tech/api-library-e10#readme",
   "dependencies": {
+    "dotenv": "^18.0.9",
     "express": "^5.3.0",
     "nodemon": "^3.1.14"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
   }
 }
