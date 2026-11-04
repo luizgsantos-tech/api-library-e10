@@ -65,21 +65,45 @@ app.post("/livros", (req: Request, res:Response) => {
 });
 
 //REQUISIÇÃO PUT (ATUALIZAR DADOS)
-app.put("/livros/:id", (req, res) => {
-    const index = buscaLivro(req.params.id);
+app.put("/livros/:id", (req: Request, res: Response) => {
+    const index = buscaLivro(String(req.params.id));
+   
+
+    if(index === -1){
+        res.status(404).json({mensagem: "Livro não encontrado!"});
+        return;
+    }
 
     const { title, author, ano_pub } = req.body;
 
     livros[index] = {
-        ...livros[index],
+        ...livros[index]!,
         title,
         author,
-        ano_pub
+        ano_pub: Number(ano_pub),
     };
 
     res.status(200).json({
         mensagem: "Livro atualizado com sucesso!",
         livro: livros[index]
+    });
+});
+
+//REQUISIÇÃO DELETE (REMOVER DADOS)
+app.delete("/livros/:id", (req: Request, res: Response) => {
+    const index = buscaLivro(String(req.params.id));
+
+
+    if (index === -1){
+        res.status(404).json({mensagem: "Livro não encontrado!"});
+        return;
+    }
+
+    //Remove o livro do array base (livros) com base no índice (id)
+    livros.splice(index,1);
+
+    res.status(200).json({
+    mensagem: "Livro removido com sucesso!",
     });
 });
 
