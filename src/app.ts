@@ -89,7 +89,7 @@ app.put("/livros/:id", (req: Request, res: Response) => {
     });
 });
 
-//REQUISIÇÃO DELETE (REMOVER DADOS)
+//REQUISIÇÃO DELETE (EXCLUIR DADOS)
 app.delete("/livros/:id", (req: Request, res: Response) => {
     const index = buscaLivro(String(req.params.id));
 
