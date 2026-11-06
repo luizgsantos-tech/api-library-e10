@@ -76,7 +76,7 @@ app.put("/livros/:id", (req: Request, res: Response) => {
 
     const { title, author, ano_pub } = req.body;
 
-    livros[index] = {
+  livros[index] = {
         ...livros[index]!,
         title,
         author,
@@ -85,6 +85,30 @@ app.put("/livros/:id", (req: Request, res: Response) => {
 
     res.status(200).json({
         mensagem: "Livro atualizado com sucesso!",
+        livro: livros[index]
+    });
+});
+
+//REQUISIÇÃO PATCH (ATUALIZAR PARCIALMENTE OS DADOS)
+app.patch("/livros/:id", (req: Request, res: Response) => {
+    const index = buscaLivro(String(req.params.id));
+
+    if(index === -1){
+        res.status(404).json({mensagem: "Livro não encontrado!"});
+        return;
+    }
+
+    const { title, author, ano_pub } = req.body;
+  
+    livros[index] = {
+        ...livros[index]!,
+        ...(title !== undefined && {title}),
+        ...(author !== undefined && {author}),
+        ...(ano_pub !== undefined && {ano_pub: Number(ano_pub)}),
+    };
+
+    res.status(200).json({
+        mensagem: "Livro atualizado parcialmente com sucesso!",
         livro: livros[index]
     });
 });
