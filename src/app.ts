@@ -1,48 +1,57 @@
 import express from "express";
 import type { Request, Response } from "express";
+import Livro from "./models/Livro.js";
 
-export interface Livro {
-    id: number;
-    title: string;
-    author: string;
-    ano_pub: number;
-}
+// export interface Livro {
+//     id: number;
+//     title: string;
+//     author: string;
+//     ano_pub: number;
+// }
 
 const app = express();
 
 //MIDDLEWARE
 app.use(express.json());
 
-const livros: Livro[] = [
-    {
-        id: 1,
-        title: "Sherlock Holmes: O Mistério",
-        author: "Hans Donner",
-        ano_pub: 1990,
-    },
+// const livros: Livro[] = [
+//     {
+//         id: 1,
+//         title: "Sherlock Holmes: O Mistério",
+//         author: "Hans Donner",
+//         ano_pub: 1990,
+//     },
 
-     {
-        id: 2,
-        title: "Cidade de Papel",
-        author: "Cora Coraline",
-        ano_pub: 2016,
-    }
-]
+//      {
+//         id: 2,
+//         title: "Cidade de Papel",
+//         author: "Cora Coraline",
+//         ano_pub: 2016,
+//     }
+// ]
 
 //FUNÇÕES
-function buscaLivro(id: string | number): number {
-    return livros.findIndex(livro => {
-        return livro.id === Number(id);
-    });
-}
+
+// function buscaLivro(id: string | number): number {
+//     return livros.findIndex(livro => {
+//         return livro.id === Number(id);
+//     });
+// }
 
 //REQUISIÇÕES
 app.get("/", (req: Request, res: Response) => {
     res.status(200).send("Codificação BackEnd");
 });
 
-app.get("/livros", (req: Request, res: Response) => {
-    res.status(200).json(livros);
+//GET REFATORADO EM 11/11/2026
+app.get("/livros", async (req: Request, res: Response) => {
+    try{
+        const listaLivros = await Livro.find({});
+        res.status(200).json(listaLivros);
+    }catch (error){
+        res.status(500).json({ mensagem: "Erro ao buscar livro." });
+    }
+    
 });
 
 //REQUISIÇÃO POST (CADASTRAR NOVO LIVRO)
