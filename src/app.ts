@@ -1,6 +1,6 @@
 import express from "express";
 import type { Request, Response } from "express";
-import Livro from "./models/Livro.js";
+import Livro, { type InterfaceLivro } from "./models/Livro.js";
 
 // export interface Livro {
 //     id: number;
@@ -13,6 +13,7 @@ const app = express();
 
 //MIDDLEWARE
 app.use(express.json());
+app.set("json spaces", 2);
 
 // const livros: Livro[] = [
 //     {
@@ -55,23 +56,28 @@ app.get("/livros", async (req: Request, res: Response) => {
 });
 
 //REQUISIÇÃO POST (CADASTRAR NOVO LIVRO)
-app.post("/livros", (req: Request, res:Response) => {
-    const { id, title, author, ano_pub } = req.body;
+app.post("/livros", async (req: Request<{},{},InterfaceLivro>, res:Response) => {
+    
+    try{
+        const { title, author, ano_pub, publisher, genre, pages } = req.body;
 
-    const novoLivro: Livro = {
-        id: Number(id),
-        title,
-        author,
-        ano_pub: Number(ano_pub),
-    };
+        const novoLivro = await Livro.create({
+            title,
+            author,
+            ano_pub: Number(ano_pub),
+            publisher,
+            genre,
+            pages: Number(pages),
+        });
 
-    livros.push(novoLivro);
-
-    res.status(201).json({
-        mensagem: "Livro cadastrado com sucesso!",
-        livro: novoLivro
+        res.status(201).json({
+            mensagem: "Livro cadastrado com sucesso!",
+            livro: novoLivro
+        });
+        }catch (error){
+            res.status(500).json({mensagem: "Erro ao cadastrar livro."})
+        }
     });
-});
 
 //REQUISIÇÃO PUT (ATUALIZAR DADOS)
 app.put("/livros/:id", (req: Request, res: Response) => {
@@ -83,7 +89,7 @@ app.put("/livros/:id", (req: Request, res: Response) => {
         return;
     }
 
-    const { title, author, ano_pub } = req.body;
+    const { id, title, author, ano_pub, publisher, genre, pages } = req.body;
 
   livros[index] = {
         ...livros[index]!,
@@ -107,7 +113,7 @@ app.patch("/livros/:id", (req: Request, res: Response) => {
         return;
     }
 
-    const { title, author, ano_pub } = req.body;
+    const { id, title, author, ano_pub, publisher, genre, pages } = req.body;
   
     livros[index] = {
         ...livros[index]!,
