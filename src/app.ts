@@ -60,7 +60,7 @@ app.put("/livros/:id", async (req: Request<{id: string}, {}, InterfaceLivro>, re
         const livroAtualizado = await Livro.findByIdAndUpdate(
             id,
             {
-            title,
+                title,
                 author,
                 ano_pub: Number(ano_pub),
                 publisher,
@@ -85,27 +85,28 @@ app.put("/livros/:id", async (req: Request<{id: string}, {}, InterfaceLivro>, re
 });
 
 //REQUISIÇÃO PATCH (ATUALIZAR PARCIALMENTE OS DADOS)
-app.patch("/livros/:id", (req: Request, res: Response) => {
-    const index = buscaLivro(String(req.params.id));
+app.patch("/livros/:id", async (req: Request<{id: string}, {}, InterfaceLivro>, res: Response) => {
+    try{
+            const { id } = req.params;
 
-    if(index === -1){
-        res.status(404).json({mensagem: "Livro não encontrado!"});
-        return;
+            const livroAtualizado = await Livro.findByIdAndUpdate(
+                id,
+                { $set: req.body },
+                { returnDocument: 'after' }
+            );
+
+            if(!livroAtualizado){
+                res.status(404).json({mensagem: "Livro não encontrado!"});
+                return;
+            }
+
+            res.status(200).json({
+                mensagem: "Livro atualizado parcialmente com sucesso!",
+                livro: livroAtualizado,
+            });
+    }catch(error){
+            res.status(500).json({mensagem: "Erro ao atualizar parcialmente o livro."});
     }
-
-    const { id, title, author, ano_pub, publisher, genre, pages } = req.body;
-  
-    livros[index] = {
-        ...livros[index]!,
-        ...(title !== undefined && {title}),
-        ...(author !== undefined && {author}),
-        ...(ano_pub !== undefined && {ano_pub: Number(ano_pub)}),
-    };
-
-    res.status(200).json({
-        mensagem: "Livro atualizado parcialmente com sucesso!",
-        livro: livros[index]
-    });
 });
 
 //REQUISIÇÃO DELETE (EXCLUIR DADOS)
