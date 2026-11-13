@@ -2,12 +2,6 @@ import express from "express";
 import type { Request, Response } from "express";
 import Livro, { type InterfaceLivro } from "./models/Livro.js";
 
-// export interface Livro {
-//     id: number;
-//     title: string;
-//     author: string;
-//     ano_pub: number;
-// }
 
 const app = express();
 
@@ -15,36 +9,13 @@ const app = express();
 app.use(express.json());
 app.set("json spaces", 2);
 
-// const livros: Livro[] = [
-//     {
-//         id: 1,
-//         title: "Sherlock Holmes: O Mistério",
-//         author: "Hans Donner",
-//         ano_pub: 1990,
-//     },
-
-//      {
-//         id: 2,
-//         title: "Cidade de Papel",
-//         author: "Cora Coraline",
-//         ano_pub: 2016,
-//     }
-// ]
-
-//FUNÇÕES
-
-// function buscaLivro(id: string | number): number {
-//     return livros.findIndex(livro => {
-//         return livro.id === Number(id);
-//     });
-// }
 
 //REQUISIÇÕES
 app.get("/", (req: Request, res: Response) => {
     res.status(200).send("Codificação BackEnd");
 });
 
-//GET REFATORADO EM 11/11/2026
+//REQUISIÇÃO GET REFATORADO EM 11/11/2026
 app.get("/livros", async (req: Request, res: Response) => {
     try{
         const listaLivros = await Livro.find({});
@@ -55,7 +26,7 @@ app.get("/livros", async (req: Request, res: Response) => {
     
 });
 
-//REQUISIÇÃO POST (CADASTRAR NOVO LIVRO)
+//REQUISIÇÃO POST (CADASTRAR NOVO LIVRO) REFATORADO EM 12/11/2026
 app.post("/livros", async (req: Request<{},{},InterfaceLivro>, res:Response) => {
     
     try{
@@ -79,7 +50,7 @@ app.post("/livros", async (req: Request<{},{},InterfaceLivro>, res:Response) => 
     }
     });
 
-//REQUISIÇÃO PUT (ATUALIZAR DADOS)
+//REQUISIÇÃO PUT (ATUALIZAR DADOS) REFATORADO EM 12/11/2026
 app.put("/livros/:id", async (req: Request<{id: string}, {}, InterfaceLivro>, res: Response) => {
     try{
         const { id } = req.params;
@@ -98,6 +69,11 @@ app.put("/livros/:id", async (req: Request<{id: string}, {}, InterfaceLivro>, re
             },
             {new: true}
         );
+
+        if(!livroAtualizado){
+            res.status(404).json({mensagem: "Livro não encontrado!"});
+            return;
+        }
 
         res.status(200).json({
             mensagem: "Livro atualizado com sucesso!",
