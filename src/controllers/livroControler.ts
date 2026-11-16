@@ -71,7 +71,7 @@ class LivroController {
     }
 
       //PATCH - ATUALIZAÇÃO PARCIAL
-     static async atualizarParcial (req: Request<{id: string}, {}, InterfaceLivro>, res: Response) {
+    static async atualizarParcial (req: Request<{id: string}, {}, InterfaceLivro>, res: Response) {
             try{
                 const { id } = req.params;
 
@@ -93,10 +93,10 @@ class LivroController {
         }catch(error){
                 res.status(500).json({mensagem: "Erro ao atualizar parcialmente o livro."});
         }
-     }
+    }
 
      //DELETE - REMOVER LIVRO
-     static async deletar (req: Request<{ id: string }>, res: Response) {
+    static async deletar (req: Request<{ id: string }>, res: Response) {
             try{
             const { id } = req.params;
 
