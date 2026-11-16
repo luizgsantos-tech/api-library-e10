@@ -15,10 +15,6 @@ app.get("/", (req: Request, res: Response) => {
     res.status(200).send("Codificação BackEnd");
 });
 
-//REQUISIÇÃO GET REFATORADO EM 11/11/2026
-app.get("/livros", async (req: Request, res: Response) => {
-});
-
 //REQUISIÇÃO POST (CADASTRAR NOVO LIVRO) REFATORADO EM 12/11/2026
 app.post("/livros", async (req: Request<{},{},InterfaceLivro>, res:Response) => {
 });
