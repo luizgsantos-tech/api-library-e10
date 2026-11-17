@@ -30,6 +30,42 @@ class LivroController {
         }
     }
 
+    //GET - FILTRAR LIVROS POR CRITÉRIOS OPCIONAIS - REQ QUERY
+    static async buscarPorFiltro (req: Request, res: Response) {
+        try{
+            //Extrair os possíveis filtros enviados após o "?" na URL
+            const { editora, genero, autor, titulo,  } = req.query;
+
+            //Criar um objeto vazio para receber apenas os filtros preenchidos
+            const filtro: Record<string, any> = {};
+
+            if(editora) {
+                filtro.publisher = String(editora); //Busca exata
+            }
+
+            if(genero){
+                filtro.genre = String(genero); //Busca exata
+            }
+
+            if(autor){
+                 //$regex: busca parcial (ex: "Machado", encontra "Machado de Assis...")
+                filtro.author = { $regex: String(autor), $options:"i"}
+            }
+
+            if(titulo){
+                 //$regex: busca parcial (ex: "Dom", encontra "Dom Casmurro")
+                filtro.title = { $regex: String(titulo), $options:"i"}
+            }
+
+            const livrosFiltrados = await Livro.find(filtro);
+
+            res.status(200).json(livrosFiltrados);
+
+        }catch (error){
+            res.status(500).json({mensagem: "Erro ao filtrar livros."})
+        }
+    }
+
     //POST - CADASTRAR UM NOVO LIVRO NO BANCO
     static async cadastrar (req: Request<{},{},InterfaceLivro>, res:Response) {
             try{
