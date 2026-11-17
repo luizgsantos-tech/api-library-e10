@@ -13,6 +13,23 @@ class LivroController {
         }
     }
 
+    //GET - BUSCAR UM LIVRO ESPECÍFICO PELO ID - REQ PARAMS
+    static async buscarPorId (req: Request<{ id: string }>, res: Response){
+        try{
+            const { id } = req.params;
+            const livroEncontrado = await Livro.findById(id);
+
+            if(!livroEncontrado) {
+                res.status(404).json({mensagem: "Livro não encontrado."});
+                return;
+            }
+
+            res.status(200).json(livroEncontrado);
+        }catch (error){
+            res.status(500).json({mensagem: "Erro ao buscar livro por ID."})
+        }
+    }
+
     //POST - CADASTRAR UM NOVO LIVRO NO BANCO
     static async cadastrar (req: Request<{},{},InterfaceLivro>, res:Response) {
             try{
