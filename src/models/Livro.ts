@@ -9,6 +9,7 @@ const livroSchema = new Schema (
         publisher: { type: String, required: true },
         genre: { type: String, required: true },
         pages: { type: Number, required: true },
+        cover: { type: String, default: "https://placehold.co/300x450?text=No+Cover"},
     },
     { versionKey: false }
 );
