@@ -7,8 +7,14 @@ import LivroController from "../controllers/livroControler.js";
 //INICIALIZAR O GERENCIADOR DE ROTAS DO EXPRESS
 const router = Router();
 
-//CRIAÇÃO DE ROTAS DA ENTIDADE LIVRO
+//1º - ROTAS FIXAS E DE BUSCA
 router.get("/livros", LivroController.listar);
+router.get("/livros/busca", LivroController.buscarPorFiltro);
+
+//2º - ROTAS DE BUSCA COM PARÂMETRO DINÂMICO
+router.get("/livros/:id", LivroController.buscarPorId);
+
+//3º - ROTAS DE ESCRITA E REMOÇÃO (ESTÁTICAS E DINÂMICAS)
 router.post("/livros", LivroController.cadastrar);
 router.put("/livros/:id", LivroController.atualizar);
 router.patch("/livros/:id", LivroController.atualizarParcial);
