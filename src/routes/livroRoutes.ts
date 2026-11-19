@@ -4,6 +4,12 @@ import { Router } from "express";
 //IMPORTA O CONTROLLER DE LIVROS
 import LivroController from "../controllers/livroControler.js";
 
+//IMPORTA O MIDDLEWARE (VALIDAÇÃO DE DADOS)
+import { validarDados } from "../middlewares/dataValidator.js";
+
+//IMPORTA OS SCHEMAS DO ZOD (VALIDADOR)
+import { criarLivroValidator, atualizarLivroValidator } from "../validators/livroValidator.js";
+
 //INICIALIZAR O GERENCIADOR DE ROTAS DO EXPRESS
 const router = Router();
 
@@ -15,9 +21,9 @@ router.get("/livros/busca", LivroController.buscarPorFiltro);
 router.get("/livros/:id", LivroController.buscarPorId);
 
 //3º - ROTAS DE ESCRITA E REMOÇÃO (ESTÁTICAS E DINÂMICAS)
-router.post("/livros", LivroController.cadastrar);
-router.put("/livros/:id", LivroController.atualizar);
-router.patch("/livros/:id", LivroController.atualizarParcial);
+router.post("/livros", validarDados(criarLivroValidator), LivroController.cadastrar);
+router.put("/livros/:id", validarDados(criarLivroValidator), LivroController.atualizar);
+router.patch("/livros/:id", validarDados(atualizarLivroValidator), LivroController.atualizarParcial);
 router.delete("/livros/:id", LivroController.deletar);
 
 //EXPORTA AS ROTAS CONFIGURADAS PARA SEREM USADAS NO APP.TS
