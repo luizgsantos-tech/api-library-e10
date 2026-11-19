@@ -5,7 +5,7 @@ export const criarLivroValidator = z.object ({
     title: z.string().min(3, "O título deve ter pelo menos 3 caracteres."),
     author: z.string().min(3, "O autor deve ter pelo menos 3 caracteres."),
     ano_pub: z.number().int("O ano de publicação deve ser um número inteiro.").max(new Date().getFullYear()),
-    publisher: z.string().min(3, "A editora deve ter pelo menos 3 caracteres."),
+    publisher: z.string().min(2, "A editora deve ter pelo menos 2 caracteres."),
     genre: z.string().min(3, "A editora deve ter pelo menos 3 caracteres."),
     pages: z.number().int("O nº de páginas deve ser inteiro.").positive("O livro deve ter pelo menos 1 página."),
     cover: z
