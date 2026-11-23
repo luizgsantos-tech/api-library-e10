@@ -1,0 +1,24 @@
+import mongoose, {Schema, Document, type InferSchemaType} from "mongoose";
+
+//DEFINIÇÃO DO SCHEMA MAPEANDO OS CAMPOS
+const livroSchema = new Schema (
+    {
+        title: { type: String, required: true },
+        author: { type: String, required: true },
+        ano_pub: { type: Number, required: true },
+        publisher: { type: String, required: true },
+        genre: { type: String, required: true },
+        pages: { type: Number, required: true },
+        cover: { type: String, default: "https://placehold.co/300x450?text=No+Cover"},
+    },
+    { versionKey: false }
+);
+
+//EXTRAÇÃO AUTOMÁTICA DO TIPO (SUBSTITUIR A CRIAÇÃO MANUAL DA INTERFACE)
+export type InterfaceLivro = InferSchemaType<typeof livroSchema>;
+
+//CRIAÇÃO DO MODEL (MONGOOSE)
+const Livro = mongoose.model("Livro", livroSchema);
+
+//DISPONIBILIZA O MÓDULO PARA SER IMPORTADO EM OUTROS ARQUIVOS
+export default Livro;
