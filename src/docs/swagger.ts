@@ -1,226 +1,32 @@
-const currentYear = new Date().getFullYear();
-
 export const swaggerDocument = {
   openapi: "3.0.0",
   info: {
-    title: "API de Livros",
+    title: "API de Gerenciamento de Livros",
     version: "1.0.0",
     description:
-      "Documentação completa da API REST de gerenciamento de livros (CRUD e busca filtrada).",
+      "Documentação completa da API REST para cadastro, consulta, filtragem, atualização e remoção de livros.",
   },
   servers: [
     {
       url: "http://localhost:3000",
-      description: "Servidor local",
+      description: "Servidor de Desenvolvimento",
     },
   ],
   tags: [
     {
       name: "Livros",
-      description: "Operações de consulta, busca, cadastro, atualização e remoção de livros",
+      description: "Operações relacionadas ao catálogo de livros",
     },
   ],
-  components: {
-    schemas: {
-      Livro: {
-        type: "object",
-        required: ["title", "author", "ano_pub", "publisher", "genre", "pages"],
-        properties: {
-          _id: {
-            type: "string",
-            example: "673c9f1b2a4d8e1234567890",
-            description: "Identificador único do livro no banco de dados",
-          },
-          title: {
-            type: "string",
-            minLength: 3,
-            example: "Dom Casmurro",
-            description: "Título do livro",
-          },
-          author: {
-            type: "string",
-            minLength: 3,
-            example: "Machado de Assis",
-            description: "Autor do livro",
-          },
-          ano_pub: {
-            type: "integer",
-            maximum: currentYear,
-            example: 1899,
-            description: "Ano de publicação",
-          },
-          publisher: {
-            type: "string",
-            minLength: 2,
-            example: "Garnier",
-            description: "Editora do livro",
-          },
-          genre: {
-            type: "string",
-            minLength: 3,
-            example: "Romance",
-            description: "Gênero literário",
-          },
-          pages: {
-            type: "integer",
-            minimum: 1,
-            example: 256,
-            description: "Número total de páginas",
-          },
-          cover: {
-            type: "string",
-            format: "uri",
-            nullable: true,
-            example: "https://exemplo.com/capas/dom-casmurro.jpg",
-            description: "URL da capa do livro (opcional)",
-          },
-          createdAt: {
-            type: "string",
-            format: "date-time",
-            example: "2026-11-19T16:00:00.000Z",
-          },
-          updatedAt: {
-            type: "string",
-            format: "date-time",
-            example: "2026-11-19T16:00:00.000Z",
-          },
-        },
-      },
-      CriarLivroInput: {
-        type: "object",
-        required: ["title", "author", "ano_pub", "publisher", "genre", "pages"],
-        properties: {
-          title: {
-            type: "string",
-            minLength: 3,
-            example: "Memórias Póstumas de Brás Cubas",
-          },
-          author: {
-            type: "string",
-            minLength: 3,
-            example: "Machado de Assis",
-          },
-          ano_pub: {
-            type: "integer",
-            maximum: currentYear,
-            example: 1881,
-          },
-          publisher: {
-            type: "string",
-            minLength: 2,
-            example: "Tipografia Nacional",
-          },
-          genre: {
-            type: "string",
-            minLength: 3,
-            example: "Realismo",
-          },
-          pages: {
-            type: "integer",
-            minimum: 1,
-            example: 368,
-          },
-          cover: {
-            type: "string",
-            format: "uri",
-            example: "https://exemplo.com/capas/bras-cubas.jpg",
-          },
-        },
-      },
-      AtualizarLivroParcialInput: {
-        type: "object",
-        properties: {
-          title: {
-            type: "string",
-            minLength: 3,
-            example: "Dom Casmurro (Edição Comentada)",
-          },
-          author: {
-            type: "string",
-            minLength: 3,
-            example: "Machado de Assis",
-          },
-          ano_pub: {
-            type: "integer",
-            maximum: currentYear,
-            example: 1899,
-          },
-          publisher: {
-            type: "string",
-            minLength: 2,
-            example: "Companhia das Letras",
-          },
-          genre: {
-            type: "string",
-            minLength: 3,
-            example: "Romance",
-          },
-          pages: {
-            type: "integer",
-            minimum: 1,
-            example: 280,
-          },
-          cover: {
-            type: "string",
-            format: "uri",
-            example: "https://exemplo.com/capas/dom-casmurro-nova.jpg",
-          },
-        },
-      },
-      ErroValidacao: {
-        type: "object",
-        properties: {
-          mensagem: {
-            type: "string",
-            example: "Erro de validação nos dados enviados.",
-          },
-          erros: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                campo: {
-                  type: "string",
-                  example: "pages",
-                },
-                mensagem: {
-                  type: "string",
-                  example: "O livro deve ter pelo menos 1 página.",
-                },
-              },
-            },
-          },
-        },
-      },
-      ErroNaoEncontrado: {
-        type: "object",
-        properties: {
-          mensagem: {
-            type: "string",
-            example: "Livro não encontrado.",
-          },
-        },
-      },
-      ErroServidor: {
-        type: "object",
-        properties: {
-          mensagem: {
-            type: "string",
-            example: "Erro interno no servidor.",
-          },
-        },
-      },
-    },
-  },
   paths: {
     "/livros": {
       get: {
         tags: ["Livros"],
         summary: "Listar todos os livros",
-        description: "Retorna todos os livros cadastrados no banco de dados.",
+        description: "Retorna uma lista com todos os livros cadastrados no banco de dados.",
         responses: {
           "200": {
-            description: "Lista de livros retornada com sucesso",
+            description: "Lista de livros retornada com sucesso.",
             content: {
               "application/json": {
                 schema: {
@@ -231,11 +37,11 @@ export const swaggerDocument = {
                 },
                 example: [
                   {
-                    _id: "673c9f1b2a4d8e1234567890",
+                    _id: "65f1a2b3c4d5e6f7a8b9c0d1",
                     title: "Dom Casmurro",
                     author: "Machado de Assis",
                     ano_pub: 1899,
-                    publisher: "Garnier",
+                    publisher: "Editora Garnier",
                     genre: "Romance",
                     pages: 256,
                     cover: "https://exemplo.com/capas/dom-casmurro.jpg",
@@ -244,32 +50,12 @@ export const swaggerDocument = {
               },
             },
           },
-          "400": {
-            description: "Requisição inválida",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/ErroValidacao",
-                },
-              },
-            },
-          },
-          "404": {
-            description: "Recurso não encontrado",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/ErroNaoEncontrado",
-                },
-              },
-            },
-          },
           "500": {
-            description: "Erro ao buscar livro.",
+            description: "Erro interno no servidor ao buscar os livros.",
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/ErroServidor",
+                  $ref: "#/components/schemas/MensagemErro",
                 },
                 example: {
                   mensagem: "Erro ao buscar livro.",
@@ -282,49 +68,29 @@ export const swaggerDocument = {
       post: {
         tags: ["Livros"],
         summary: "Cadastrar um novo livro",
-        description:
-          "Valida os dados com `criarLivroValidator` e cria um novo registro de livro.",
+        description: "Valida os dados enviados e cadastra um novo livro no banco de dados.",
         requestBody: {
           required: true,
           content: {
             "application/json": {
               schema: {
-                $ref: "#/components/schemas/CriarLivroInput",
+                $ref: "#/components/schemas/CriarLivroRequest",
               },
               example: {
-                title: "Memórias Póstumas de Brás Cubas",
+                title: "Dom Casmurro",
                 author: "Machado de Assis",
-                ano_pub: 1881,
-                publisher: "Tipografia Nacional",
-                genre: "Realismo",
-                pages: 368,
-                cover: "https://exemplo.com/capas/bras-cubas.jpg",
+                ano_pub: 1899,
+                publisher: "Editora Garnier",
+                genre: "Romance",
+                pages: 256,
+                cover: "https://exemplo.com/capas/dom-casmurro.jpg",
               },
             },
           },
         },
         responses: {
-          "200": {
-            description: "Operação concluída",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    mensagem: {
-                      type: "string",
-                      example: "Livro cadastrado com sucesso!",
-                    },
-                    livro: {
-                      $ref: "#/components/schemas/Livro",
-                    },
-                  },
-                },
-              },
-            },
-          },
           "201": {
-            description: "Livro cadastrado com sucesso!",
+            description: "Livro cadastrado com sucesso.",
             content: {
               "application/json": {
                 schema: {
@@ -332,7 +98,6 @@ export const swaggerDocument = {
                   properties: {
                     mensagem: {
                       type: "string",
-                      example: "Livro cadastrado com sucesso!",
                     },
                     livro: {
                       $ref: "#/components/schemas/Livro",
@@ -342,21 +107,21 @@ export const swaggerDocument = {
                 example: {
                   mensagem: "Livro cadastrado com sucesso!",
                   livro: {
-                    _id: "673ca04e2a4d8e1234567891",
-                    title: "Memórias Póstumas de Brás Cubas",
+                    _id: "65f1a2b3c4d5e6f7a8b9c0d1",
+                    title: "Dom Casmurro",
                     author: "Machado de Assis",
-                    ano_pub: 1881,
-                    publisher: "Tipografia Nacional",
-                    genre: "Realismo",
-                    pages: 368,
-                    cover: "https://exemplo.com/capas/bras-cubas.jpg",
+                    ano_pub: 1899,
+                    publisher: "Editora Garnier",
+                    genre: "Romance",
+                    pages: 256,
+                    cover: "https://exemplo.com/capas/dom-casmurro.jpg",
                   },
                 },
               },
             },
           },
           "400": {
-            description: "Erro de validação nos dados do livro",
+            description: "Erro de validação nos dados enviados (Zod).",
             content: {
               "application/json": {
                 schema: {
@@ -374,22 +139,12 @@ export const swaggerDocument = {
               },
             },
           },
-          "404": {
-            description: "Recurso não encontrado",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/ErroNaoEncontrado",
-                },
-              },
-            },
-          },
           "500": {
-            description: "Erro ao cadastrar livro.",
+            description: "Erro interno no servidor ao cadastrar o livro.",
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/ErroServidor",
+                  $ref: "#/components/schemas/MensagemErro",
                 },
                 example: {
                   mensagem: "Erro ao cadastrar livro.",
@@ -403,54 +158,54 @@ export const swaggerDocument = {
     "/livros/busca": {
       get: {
         tags: ["Livros"],
-        summary: "Buscar livros por filtros opcionais",
+        summary: "Filtrar livros por critérios opcionais",
         description:
-          "Filtra livros por `editora` (busca exata em `publisher`), `genero` (busca exata em `genre`), `autor` (busca parcial case-insensitive em `author`) e `titulo` (busca parcial case-insensitive em `title`).",
+          "Busca livros utilizando parâmetros de consulta (query params). Editora e gênero usam correspondência exata; autor e título usam busca parcial sem distinção entre maiúsculas e minúsculas.",
         parameters: [
           {
-            in: "query",
             name: "editora",
+            in: "query",
             required: false,
+            description: "Filtra pelo nome exato da editora (campo publisher).",
             schema: {
               type: "string",
             },
-            example: "Garnier",
-            description: "Filtro exato pela editora (`publisher`)",
+            example: "Editora Garnier",
           },
           {
-            in: "query",
             name: "genero",
+            in: "query",
             required: false,
+            description: "Filtra pelo gênero literário exato (campo genre).",
             schema: {
               type: "string",
             },
             example: "Romance",
-            description: "Filtro exato pelo gênero (`genre`)",
           },
           {
-            in: "query",
             name: "autor",
+            in: "query",
             required: false,
+            description: "Filtra por correspondência parcial (case-insensitive) do nome do autor.",
             schema: {
               type: "string",
             },
             example: "Machado",
-            description: "Filtro parcial (case-insensitive) pelo autor (`author`)",
           },
           {
-            in: "query",
             name: "titulo",
+            in: "query",
             required: false,
+            description: "Filtra por correspondência parcial (case-insensitive) do título do livro.",
             schema: {
               type: "string",
             },
             example: "Dom",
-            description: "Filtro parcial (case-insensitive) pelo título (`title`)",
           },
         ],
         responses: {
           "200": {
-            description: "Livros filtrados retornados com sucesso",
+            description: "Lista de livros filtrados retornada com sucesso.",
             content: {
               "application/json": {
                 schema: {
@@ -461,11 +216,11 @@ export const swaggerDocument = {
                 },
                 example: [
                   {
-                    _id: "673c9f1b2a4d8e1234567890",
+                    _id: "65f1a2b3c4d5e6f7a8b9c0d1",
                     title: "Dom Casmurro",
                     author: "Machado de Assis",
                     ano_pub: 1899,
-                    publisher: "Garnier",
+                    publisher: "Editora Garnier",
                     genre: "Romance",
                     pages: 256,
                     cover: "https://exemplo.com/capas/dom-casmurro.jpg",
@@ -474,42 +229,12 @@ export const swaggerDocument = {
               },
             },
           },
-          "201": {
-            description: "Criado (não aplicável para GET)",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Livro",
-                },
-              },
-            },
-          },
-          "400": {
-            description: "Parâmetros de consulta inválidos",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/ErroValidacao",
-                },
-              },
-            },
-          },
-          "404": {
-            description: "Nenhum livro encontrado para os filtros informados",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/ErroNaoEncontrado",
-                },
-              },
-            },
-          },
           "500": {
-            description: "Erro ao filtrar livros.",
+            description: "Erro interno no servidor ao filtrar os livros.",
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/ErroServidor",
+                  $ref: "#/components/schemas/MensagemErro",
                 },
                 example: {
                   mensagem: "Erro ao filtrar livros.",
@@ -524,33 +249,26 @@ export const swaggerDocument = {
       get: {
         tags: ["Livros"],
         summary: "Buscar livro por ID",
-        description: "Retorna um livro específico a partir do seu ID.",
+        description: "Retorna os detalhes de um livro específico a partir do seu identificador.",
         parameters: [
           {
-            in: "path",
-            name: "id",
-            required: true,
-            schema: {
-              type: "string",
-            },
-            example: "673c9f1b2a4d8e1234567890",
-            description: "ID do livro",
+            $ref: "#/components/parameters/LivroIdParam",
           },
         ],
         responses: {
           "200": {
-            description: "Livro encontrado com sucesso",
+            description: "Livro encontrado com sucesso.",
             content: {
               "application/json": {
                 schema: {
                   $ref: "#/components/schemas/Livro",
                 },
                 example: {
-                  _id: "673c9f1b2a4d8e1234567890",
+                  _id: "65f1a2b3c4d5e6f7a8b9c0d1",
                   title: "Dom Casmurro",
                   author: "Machado de Assis",
                   ano_pub: 1899,
-                  publisher: "Garnier",
+                  publisher: "Editora Garnier",
                   genre: "Romance",
                   pages: 256,
                   cover: "https://exemplo.com/capas/dom-casmurro.jpg",
@@ -558,35 +276,12 @@ export const swaggerDocument = {
               },
             },
           },
-          "201": {
-            description: "Criado (não aplicável para GET)",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Livro",
-                },
-              },
-            },
-          },
-          "400": {
-            description: "ID inválido",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/ErroValidacao",
-                },
-                example: {
-                  mensagem: "ID inválido.",
-                },
-              },
-            },
-          },
           "404": {
-            description: "Livro não encontrado.",
+            description: "Livro não encontrado para o ID informado.",
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/ErroNaoEncontrado",
+                  $ref: "#/components/schemas/MensagemErro",
                 },
                 example: {
                   mensagem: "Livro não encontrado.",
@@ -595,11 +290,11 @@ export const swaggerDocument = {
             },
           },
           "500": {
-            description: "Erro ao buscar livro por ID.",
+            description: "Erro interno no servidor ao buscar o livro por ID.",
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/ErroServidor",
+                  $ref: "#/components/schemas/MensagemErro",
                 },
                 example: {
                   mensagem: "Erro ao buscar livro por ID.",
@@ -613,17 +308,10 @@ export const swaggerDocument = {
         tags: ["Livros"],
         summary: "Atualizar completamente um livro",
         description:
-          "Valida os dados com `criarLivroValidator` e substitui os dados do livro correspondente ao `id`.",
+          "Substitui todos os dados de um livro existente pelo ID. Exige todos os campos obrigatórios definidos no schema de criação.",
         parameters: [
           {
-            in: "path",
-            name: "id",
-            required: true,
-            schema: {
-              type: "string",
-            },
-            example: "673c9f1b2a4d8e1234567890",
-            description: "ID do livro",
+            $ref: "#/components/parameters/LivroIdParam",
           },
         ],
         requestBody: {
@@ -631,23 +319,23 @@ export const swaggerDocument = {
           content: {
             "application/json": {
               schema: {
-                $ref: "#/components/schemas/CriarLivroInput",
+                $ref: "#/components/schemas/CriarLivroRequest",
               },
               example: {
-                title: "Dom Casmurro",
+                title: "Memórias Póstumas de Brás Cubas",
                 author: "Machado de Assis",
-                ano_pub: 1899,
-                publisher: "Garnier",
+                ano_pub: 1881,
+                publisher: "Tipografia Nacional",
                 genre: "Romance",
-                pages: 264,
-                cover: "https://exemplo.com/capas/dom-casmurro.jpg",
+                pages: 320,
+                cover: "https://exemplo.com/capas/memorias-postumas.jpg",
               },
             },
           },
         },
         responses: {
           "200": {
-            description: "Livro atualizado com sucesso!",
+            description: "Livro atualizado com sucesso.",
             content: {
               "application/json": {
                 schema: {
@@ -655,7 +343,6 @@ export const swaggerDocument = {
                   properties: {
                     mensagem: {
                       type: "string",
-                      example: "Livro atualizado com sucesso!",
                     },
                     livro: {
                       $ref: "#/components/schemas/Livro",
@@ -665,45 +352,44 @@ export const swaggerDocument = {
                 example: {
                   mensagem: "Livro atualizado com sucesso!",
                   livro: {
-                    _id: "673c9f1b2a4d8e1234567890",
-                    title: "Dom Casmurro",
+                    _id: "65f1a2b3c4d5e6f7a8b9c0d1",
+                    title: "Memórias Póstumas de Brás Cubas",
                     author: "Machado de Assis",
-                    ano_pub: 1899,
-                    publisher: "Garnier",
+                    ano_pub: 1881,
+                    publisher: "Tipografia Nacional",
                     genre: "Romance",
-                    pages: 264,
-                    cover: "https://exemplo.com/capas/dom-casmurro.jpg",
+                    pages: 320,
+                    cover: "https://exemplo.com/capas/memorias-postumas.jpg",
                   },
                 },
               },
             },
           },
-          "201": {
-            description: "Criado",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Livro",
-                },
-              },
-            },
-          },
           "400": {
-            description: "Erro de validação nos dados enviados ou ID inválido",
+            description: "Erro de validação nos dados enviados (Zod).",
             content: {
               "application/json": {
                 schema: {
                   $ref: "#/components/schemas/ErroValidacao",
                 },
+                example: {
+                  mensagem: "Erro de validação nos dados enviados.",
+                  erros: [
+                    {
+                      campo: "pages",
+                      mensagem: "O livro deve ter pelo menos 1 página.",
+                    },
+                  ],
+                },
               },
             },
           },
           "404": {
-            description: "Livro não encontrado!",
+            description: "Livro não encontrado para o ID informado.",
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/ErroNaoEncontrado",
+                  $ref: "#/components/schemas/MensagemErro",
                 },
                 example: {
                   mensagem: "Livro não encontrado!",
@@ -712,11 +398,11 @@ export const swaggerDocument = {
             },
           },
           "500": {
-            description: "Erro ao atualizar livro.",
+            description: "Erro interno no servidor ao atualizar o livro.",
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/ErroServidor",
+                  $ref: "#/components/schemas/MensagemErro",
                 },
                 example: {
                   mensagem: "Erro ao atualizar livro.",
@@ -730,17 +416,10 @@ export const swaggerDocument = {
         tags: ["Livros"],
         summary: "Atualizar parcialmente um livro",
         description:
-          "Valida os campos enviados com `atualizarLivroValidator` e aplica atualização parcial (`$set`) no livro correspondente ao `id`.",
+          "Atualiza apenas os campos informados no corpo da requisição de um livro existente.",
         parameters: [
           {
-            in: "path",
-            name: "id",
-            required: true,
-            schema: {
-              type: "string",
-            },
-            example: "673c9f1b2a4d8e1234567890",
-            description: "ID do livro",
+            $ref: "#/components/parameters/LivroIdParam",
           },
         ],
         requestBody: {
@@ -748,9 +427,10 @@ export const swaggerDocument = {
           content: {
             "application/json": {
               schema: {
-                $ref: "#/components/schemas/AtualizarLivroParcialInput",
+                $ref: "#/components/schemas/AtualizarLivroRequest",
               },
               example: {
+                publisher: "Companhia das Letras",
                 pages: 280,
               },
             },
@@ -758,7 +438,7 @@ export const swaggerDocument = {
         },
         responses: {
           "200": {
-            description: "Livro atualizado parcialmente com sucesso!",
+            description: "Livro atualizado parcialmente com sucesso.",
             content: {
               "application/json": {
                 schema: {
@@ -766,7 +446,6 @@ export const swaggerDocument = {
                   properties: {
                     mensagem: {
                       type: "string",
-                      example: "Livro atualizado parcialmente com sucesso!",
                     },
                     livro: {
                       $ref: "#/components/schemas/Livro",
@@ -776,11 +455,11 @@ export const swaggerDocument = {
                 example: {
                   mensagem: "Livro atualizado parcialmente com sucesso!",
                   livro: {
-                    _id: "673c9f1b2a4d8e1234567890",
+                    _id: "65f1a2b3c4d5e6f7a8b9c0d1",
                     title: "Dom Casmurro",
                     author: "Machado de Assis",
                     ano_pub: 1899,
-                    publisher: "Garnier",
+                    publisher: "Companhia das Letras",
                     genre: "Romance",
                     pages: 280,
                     cover: "https://exemplo.com/capas/dom-casmurro.jpg",
@@ -789,32 +468,31 @@ export const swaggerDocument = {
               },
             },
           },
-          "201": {
-            description: "Criado",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Livro",
-                },
-              },
-            },
-          },
           "400": {
-            description: "Erro de validação nos dados enviados ou ID inválido",
+            description: "Erro de validação nos dados enviados (Zod).",
             content: {
               "application/json": {
                 schema: {
                   $ref: "#/components/schemas/ErroValidacao",
                 },
+                example: {
+                  mensagem: "Erro de validação nos dados enviados.",
+                  erros: [
+                    {
+                      campo: "cover",
+                      mensagem: "A capa deve ser uma URL válida.",
+                    },
+                  ],
+                },
               },
             },
           },
           "404": {
-            description: "Livro não encontrado!",
+            description: "Livro não encontrado para o ID informado.",
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/ErroNaoEncontrado",
+                  $ref: "#/components/schemas/MensagemErro",
                 },
                 example: {
                   mensagem: "Livro não encontrado!",
@@ -823,11 +501,11 @@ export const swaggerDocument = {
             },
           },
           "500": {
-            description: "Erro ao atualizar parcialmente o livro.",
+            description: "Erro interno no servidor ao atualizar parcialmente o livro.",
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/ErroServidor",
+                  $ref: "#/components/schemas/MensagemErro",
                 },
                 example: {
                   mensagem: "Erro ao atualizar parcialmente o livro.",
@@ -840,22 +518,15 @@ export const swaggerDocument = {
       delete: {
         tags: ["Livros"],
         summary: "Remover um livro",
-        description: "Remove o livro correspondente ao `id` informado.",
+        description: "Remove permanentemente um livro do banco de dados a partir do seu ID.",
         parameters: [
           {
-            in: "path",
-            name: "id",
-            required: true,
-            schema: {
-              type: "string",
-            },
-            example: "673c9f1b2a4d8e1234567890",
-            description: "ID do livro",
+            $ref: "#/components/parameters/LivroIdParam",
           },
         ],
         responses: {
           "200": {
-            description: "Livro removido com sucesso!",
+            description: "Livro removido com sucesso.",
             content: {
               "application/json": {
                 schema: {
@@ -863,7 +534,6 @@ export const swaggerDocument = {
                   properties: {
                     mensagem: {
                       type: "string",
-                      example: "Livro removido com sucesso!",
                     },
                   },
                 },
@@ -873,32 +543,12 @@ export const swaggerDocument = {
               },
             },
           },
-          "201": {
-            description: "Criado (não aplicável para DELETE)",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/ErroValidacao",
-                },
-              },
-            },
-          },
-          "400": {
-            description: "ID inválido",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/ErroValidacao",
-                },
-              },
-            },
-          },
           "404": {
-            description: "Livro não encontrado!",
+            description: "Livro não encontrado para o ID informado.",
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/ErroNaoEncontrado",
+                  $ref: "#/components/schemas/MensagemErro",
                 },
                 example: {
                   mensagem: "Livro não encontrado!",
@@ -907,11 +557,11 @@ export const swaggerDocument = {
             },
           },
           "500": {
-            description: "Erro ao remover livro.",
+            description: "Erro interno no servidor ao remover o livro.",
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/ErroServidor",
+                  $ref: "#/components/schemas/MensagemErro",
                 },
                 example: {
                   mensagem: "Erro ao remover livro.",
@@ -923,4 +573,207 @@ export const swaggerDocument = {
       },
     },
   },
-} as const;
+  components: {
+    parameters: {
+      LivroIdParam: {
+        name: "id",
+        in: "path",
+        required: true,
+        description: "Identificador único do livro (ObjectId do MongoDB).",
+        schema: {
+          type: "string",
+        },
+        example: "65f1a2b3c4d5e6f7a8b9c0d1",
+      },
+    },
+    schemas: {
+      Livro: {
+        type: "object",
+        properties: {
+          _id: {
+            type: "string",
+            description: "Identificador único gerado pelo MongoDB.",
+            example: "65f1a2b3c4d5e6f7a8b9c0d1",
+          },
+          title: {
+            type: "string",
+            minLength: 3,
+            description: "Título do livro.",
+            example: "Dom Casmurro",
+          },
+          author: {
+            type: "string",
+            minLength: 3,
+            description: "Nome do autor do livro.",
+            example: "Machado de Assis",
+          },
+          ano_pub: {
+            type: "integer",
+            maximum: new Date().getFullYear(),
+            description: "Ano de publicação do livro.",
+            example: 1899,
+          },
+          publisher: {
+            type: "string",
+            minLength: 2,
+            description: "Nome da editora.",
+            example: "Editora Garnier",
+          },
+          genre: {
+            type: "string",
+            minLength: 3,
+            description: "Gênero literário do livro.",
+            example: "Romance",
+          },
+          pages: {
+            type: "integer",
+            minimum: 1,
+            description: "Quantidade total de páginas.",
+            example: 256,
+          },
+          cover: {
+            type: "string",
+            format: "uri",
+            nullable: true,
+            description: "URL válida da imagem de capa do livro (opcional).",
+            example: "https://exemplo.com/capas/dom-casmurro.jpg",
+          },
+        },
+        required: ["_id", "title", "author", "ano_pub", "publisher", "genre", "pages"],
+      },
+      CriarLivroRequest: {
+        type: "object",
+        required: ["title", "author", "ano_pub", "publisher", "genre", "pages"],
+        properties: {
+          title: {
+            type: "string",
+            minLength: 3,
+            description: "Título do livro (mínimo de 3 caracteres).",
+            example: "Dom Casmurro",
+          },
+          author: {
+            type: "string",
+            minLength: 3,
+            description: "Nome do autor (mínimo de 3 caracteres).",
+            example: "Machado de Assis",
+          },
+          ano_pub: {
+            type: "integer",
+            maximum: new Date().getFullYear(),
+            description: "Ano de publicação (número inteiro, no máximo o ano atual).",
+            example: 1899,
+          },
+          publisher: {
+            type: "string",
+            minLength: 2,
+            description: "Nome da editora (mínimo de 2 caracteres).",
+            example: "Editora Garnier",
+          },
+          genre: {
+            type: "string",
+            minLength: 3,
+            description: "Gênero literário (mínimo de 3 caracteres).",
+            example: "Romance",
+          },
+          pages: {
+            type: "integer",
+            minimum: 1,
+            description: "Número de páginas (inteiro positivo, mínimo 1).",
+            example: 256,
+          },
+          cover: {
+            type: "string",
+            format: "uri",
+            nullable: true,
+            description:
+              "URL válida da capa do livro. Aceita string vazia (convertida para undefined) ou pode ser omitido.",
+            example: "https://exemplo.com/capas/dom-casmurro.jpg",
+          },
+        },
+      },
+      AtualizarLivroRequest: {
+        type: "object",
+        properties: {
+          title: {
+            type: "string",
+            minLength: 3,
+            description: "Título do livro (mínimo de 3 caracteres).",
+            example: "Dom Casmurro",
+          },
+          author: {
+            type: "string",
+            minLength: 3,
+            description: "Nome do autor (mínimo de 3 caracteres).",
+            example: "Machado de Assis",
+          },
+          ano_pub: {
+            type: "integer",
+            maximum: new Date().getFullYear(),
+            description: "Ano de publicação (número inteiro, no máximo o ano atual).",
+            example: 1899,
+          },
+          publisher: {
+            type: "string",
+            minLength: 2,
+            description: "Nome da editora (mínimo de 2 caracteres).",
+            example: "Companhia das Letras",
+          },
+          genre: {
+            type: "string",
+            minLength: 3,
+            description: "Gênero literário (mínimo de 3 caracteres).",
+            example: "Romance",
+          },
+          pages: {
+            type: "integer",
+            minimum: 1,
+            description: "Número de páginas (inteiro positivo, mínimo 1).",
+            example: 280,
+          },
+          cover: {
+            type: "string",
+            format: "uri",
+            nullable: true,
+            description:
+              "URL válida da capa do livro. Aceita string vazia (convertida para undefined) ou pode ser omitido.",
+            example: "https://exemplo.com/capas/dom-casmurro.jpg",
+          },
+        },
+      },
+      ErroValidacao: {
+        type: "object",
+        properties: {
+          mensagem: {
+            type: "string",
+            example: "Erro de validação nos dados enviados.",
+          },
+          erros: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                campo: {
+                  type: "string",
+                  example: "title",
+                },
+                mensagem: {
+                  type: "string",
+                  example: "O título deve ter pelo menos 3 caracteres.",
+                },
+              },
+            },
+          },
+        },
+      },
+      MensagemErro: {
+        type: "object",
+        properties: {
+          mensagem: {
+            type: "string",
+            example: "Livro não encontrado.",
+          },
+        },
+      },
+    },
+  },
+};
