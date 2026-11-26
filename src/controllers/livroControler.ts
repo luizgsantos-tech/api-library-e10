@@ -1,12 +1,19 @@
 import type {Request, Response} from "express";
 import Livro, { type InterfaceLivro } from "../models/Livro.js";
+import type { ILivroRepository, LivroDTO, FiltroLivroDTO } from "../repositories/ILivroRepository.js";
 
 class LivroController {
 
+    private livroRepository: ILivroRepository;
+
+    constructor(livroRepository: ILivroRepository){
+        this.livroRepository = livroRepository;
+    }
+
     //GET - LISTAR TODOS OS LIVROS DO BANCO
-    static async listar (req: Request, res: Response) {
+    async listar (req: Request, res: Response) {
             try{
-            const listaLivros = await Livro.find({});
+            const listaLivros = await this.livroRepository.listar();
             res.status(200).json(listaLivros);
         }catch (error){
             res.status(500).json({ mensagem: "Erro ao buscar livro." });
@@ -14,10 +21,10 @@ class LivroController {
     }
 
     //GET - BUSCAR UM LIVRO ESPECÍFICO PELO ID - REQ PARAMS
-    static async buscarPorId (req: Request<{ id: string }>, res: Response){
+    async buscarPorId (req: Request<{ id: string }>, res: Response){
         try{
             const { id } = req.params;
-            const livroEncontrado = await Livro.findById(id);
+            const livroEncontrado = await this.livroRepository.buscarPorId(id);
 
             if(!livroEncontrado) {
                 res.status(404).json({mensagem: "Livro não encontrado."});
@@ -31,7 +38,7 @@ class LivroController {
     }
 
     //GET - FILTRAR LIVROS POR CRITÉRIOS OPCIONAIS - REQ QUERY
-    static async buscarPorFiltro (req: Request, res: Response) {
+    async buscarPorFiltro (req: Request, res: Response) {
         try{
             //Extrair os possíveis filtros enviados após o "?" na URL
             const { editora, genero, autor, titulo,  } = req.query;
@@ -57,7 +64,7 @@ class LivroController {
                 filtro.title = { $regex: String(titulo), $options:"i"}
             }
 
-            const livrosFiltrados = await Livro.find(filtro);
+            const livrosFiltrados = await this.livroRepository.buscarPorFiltro(filtro);
 
             res.status(200).json(livrosFiltrados);
 
@@ -67,19 +74,9 @@ class LivroController {
     }
 
     //POST - CADASTRAR UM NOVO LIVRO NO BANCO
-    static async cadastrar (req: Request<{},{},InterfaceLivro>, res:Response) {
+    async cadastrar (req: Request<{},{},InterfaceLivro>, res:Response) {
             try{
-            const { title, author, ano_pub, publisher, genre, pages, cover } = req.body;
-
-            const novoLivro = await Livro.create({
-                title,
-                author,
-                ano_pub: Number(ano_pub),
-                publisher,
-                genre,
-                pages: Number(pages),
-                cover
-            });
+            const novoLivro = await this.livroRepository.cadastrar(req.body);
 
             res.status(201).json({
                 mensagem: "Livro cadastrado com sucesso!",
@@ -91,25 +88,10 @@ class LivroController {
     }
 
     //PUT - ATUALIZAÇÃO COMPLETA
-    static async atualizar (req: Request<{id: string}, {}, InterfaceLivro>, res: Response) {
+    async atualizar (req: Request<{id: string}, {}, InterfaceLivro>, res: Response) {
         try{
                 const { id } = req.params;
-        
-                const { title, author, ano_pub, publisher, genre, pages, cover } = req.body;
-        
-                const livroAtualizado = await Livro.findByIdAndUpdate(
-                    id,
-                    {
-                        title,
-                        author,
-                        ano_pub: Number(ano_pub),
-                        publisher,
-                        genre,
-                        pages: Number(pages),
-                        cover
-                    },
-                    {new: true}
-                );
+                const livroAtualizado = await this.livroRepository.atualizar(id, req.body);
         
                 if(!livroAtualizado){
                     res.status(404).json({mensagem: "Livro não encontrado!"});
@@ -126,15 +108,11 @@ class LivroController {
     }
 
       //PATCH - ATUALIZAÇÃO PARCIAL
-    static async atualizarParcial (req: Request<{id: string}, {}, InterfaceLivro>, res: Response) {
+    async atualizarParcial (req: Request<{id: string}, {}, InterfaceLivro>, res: Response) {
             try{
                 const { id } = req.params;
 
-                const livroAtualizado = await Livro.findByIdAndUpdate(
-                    id,
-                    { $set: req.body },
-                    { returnDocument: 'after' }
-                );
+                const livroAtualizado = await this.livroRepository.atualizarParcial(id, req.body);
 
                 if(!livroAtualizado){
                     res.status(404).json({mensagem: "Livro não encontrado!"});
@@ -151,11 +129,11 @@ class LivroController {
     }
 
      //DELETE - REMOVER LIVRO
-    static async deletar (req: Request<{ id: string }>, res: Response) {
+    async deletar (req: Request<{ id: string }>, res: Response) {
             try{
             const { id } = req.params;
 
-            const livroDeletado = await Livro.findByIdAndDelete(id);
+            const livroDeletado = await this.livroRepository.deletar(id);
 
 
             if (!livroDeletado){
