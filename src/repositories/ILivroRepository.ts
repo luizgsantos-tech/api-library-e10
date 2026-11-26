@@ -17,11 +17,11 @@ export interface FiltroLivroDTO{
 }
 
 export interface ILivroRepository{
-    listar(): Promise<any[]>;
-    buscarPorId(id: string): Promise<any[] | null>;
-    buscarPorFiltro(filtros: FiltroLivroDTO): Promise<any[]>;
-    cadastrar(dados: LivroDTO): Promise<any[]>;
-    atualizar(id: string, dados: LivroDTO): Promise<any[]>;
-    atualizarParcial(id: string, dados:Partial<LivroDTO>): Promise<any[] | null>;
+    listar(): Promise<LivroDTO[]>;
+    buscarPorId(id: string): Promise<LivroDTO | null>;
+    buscarPorFiltro(filtros: FiltroLivroDTO): Promise<LivroDTO[]>;
+    cadastrar(dados: LivroDTO): Promise<LivroDTO>;
+    atualizar(id: string, dados: LivroDTO): Promise<LivroDTO | null>;
+    atualizarParcial(id: string, dados:Partial<LivroDTO>): Promise<LivroDTO | null>;
     deletar(id: string): Promise<boolean>;
 }

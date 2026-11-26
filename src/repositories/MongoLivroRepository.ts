@@ -45,6 +45,14 @@ export class MongoLivroRepository implements ILivroRepository {
         );
     }
 
+    async atualizarParcial(id: string, dados: Partial<LivroDTO>){
+        return await Livro.findByIdAndUpdate(
+            id,
+            {$set: dados},
+            {new: true}
+        )
+    }
+
     async deletar (id: string){
         const livroDeletado = await Livro.findByIdAndDelete(id);
         return Boolean(livroDeletado);    }
