@@ -19,6 +19,7 @@ model Livro {
   ano_pub       Int
   publisher     String
   pages         Int
+  genre         String
   cover         String @default("https://placehold.co/300x450?text=No+Cover")
 
 }
